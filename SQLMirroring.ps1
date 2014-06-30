@@ -1067,7 +1067,7 @@ EXEC XP_CMDSHELL ''net use S: "\\MirrorServer\' + $MirrorSQLDefaultLocations.Bac
 $Backups += 
 Get-Content ($File.Substring(0,$FileIndex) + "\Databases.txt") | ForEach-Object {
 'BACKUP DATABASE [' + $_ + ']
-    TO  DISK = N''\\MirrorServer\'  + $MirrorSQLDefaultLocations.BackupDirectory.Substring(0,1) + '$' + $MirrorSQLDefaultLocations.BackupDirectory.Substring(2) + $_ + 'Mirror34.bak''
+    TO  DISK = N''\\MirrorServer\'  + $MirrorSQLDefaultLocations.BackupDirectory.Substring(0,1) + '$' + $MirrorSQLDefaultLocations.BackupDirectory.Substring(2) + $_ + 'Mirror.bak''
     WITH NOFORMAT, NOINIT, SKIP, NOREWIND, NOUNLOAD
 ;'}
 $Backups +=
@@ -1095,7 +1095,7 @@ EXEC XP_CMDSHELL ''net use S: "\\MirrorServer\' + $MirrorSQLDefaultLocations.Bac
 $LogBackup +=
 Get-Content ($File.Substring(0,$FileIndex) + "\Databases.txt") | ForEach-Object {
 'BACKUP LOG [' + $_ + ']
-    TO  DISK = N''\\MirrorServer\'  + $MirrorSQLDefaultLocations.BackupDirectory.Substring(0,1) + '$' + $MirrorSQLDefaultLocations.BackupDirectory.Substring(2) + $_ + 'Mirror34.bak''
+    TO  DISK = N''\\MirrorServer\'  + $MirrorSQLDefaultLocations.BackupDirectory.Substring(0,1) + '$' + $MirrorSQLDefaultLocations.BackupDirectory.Substring(2) + $_ + 'Mirror.bak''
     WITH NOFORMAT, NOINIT, SKIP, NOREWIND, NOUNLOAD
 ;'}
 $LogBackup +=
@@ -1120,10 +1120,10 @@ $LogLLogicalFile = Invoke-Sqlcmd -Query "SELECT	name AS LogicalLogFileName
                             WHERE	DB_NAME(database_id) IN ('$_')
 		                            AND type = 1"
 'USE [master]
-RESTORE DATABASE [' + $_ + '] FROM  DISK = N''' + $MirrorSQLDefaultLocations.BackupDirectory + $_ + 'Mirror34.bak'' WITH  FILE = 1,  NORECOVERY,  NOUNLOAD,
+RESTORE DATABASE [' + $_ + '] FROM  DISK = N''' + $MirrorSQLDefaultLocations.BackupDirectory + $_ + 'Mirror.bak'' WITH  FILE = 1,  NORECOVERY,  NOUNLOAD,
 MOVE N''' + $DatbaseLogicalFile.LogicalDatabaseFileName + ''' TO N''' + $MirrorSQLDefaultLocations.DefaultFile + $DatbaseLogicalFile.LogicalDatabaseFileName + '.mdf'',
 MOVE N''' + $LogLLogicalFile.LogicalLogFileName + ''' TO N''' + $MirrorSQLDefaultLocations.DefaultFile + $LogLLogicalFile.LogicalLogFileName + '.ldf'';
-RESTORE LOG [' + $_ + '] FROM  DISK = N''' + $MirrorSQLDefaultLocations.BackupDirectory + $_ + 'Mirror34.bak'' WITH  FILE = 2,  NORECOVERY,  NOUNLOAD
+RESTORE LOG [' + $_ + '] FROM  DISK = N''' + $MirrorSQLDefaultLocations.BackupDirectory + $_ + 'Mirror.bak'' WITH  FILE = 2,  NORECOVERY,  NOUNLOAD
 ;'} > ($File + '\BackupRestore.sql')
 
 ##Creates Set Partner Script For Principal Server
